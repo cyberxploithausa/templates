@@ -1,0 +1,89 @@
+Quick Checks
+├── Default Credentials
+│   └── Hydra
+│   └── Metasploit
+├── Web Service Names/Versions
+│   └── nmap
+│   └── nikto
+├── CVE/EXPLOITS (HEADER CHECKS)
+│   └── nmap
+│   └── searchsploit
+├── Metasploit Exploits
+│   └── Metasploit Framework
+├── robots.txt, .SVN entries, .DS_STORE files
+│   └── wfuzz
+│   └── gobuster
+├── Files
+│   └── wfuzz
+│   └── gobuster
+├── Directories
+│   └── wfuzz
+│   └── gobuster
+├── Information Disclosure
+│   └── wfuzz
+├── Error Message Username Enumeration
+│   └── wfuzz
+├── Reflective Values
+│   └── wfuzz
+├── Hidden Parameters at Endpoints
+│   └── wfuzz
+│   └── SecLists
+│   └── Burp Suite
+├── API Locations
+│   └── Postman
+├── Potential Users
+│   └── theHarvester
+├── Authentication Bypass
+│   └── nmap
+├── OAuth Bypass
+│   └── o2c
+├── XSS
+│   ├── Reflective
+│   │   └── XSSer
+│   └── Stored
+│       └── XSSer
+├── SQL Injection
+│   ├── Classic
+│   │   └── sqlmap
+│   └── Blind (Check Sleeps)
+│       └── sqlmap
+├── IDOR
+├── Directory Traversals
+│   └── wfuzz
+│   └── gobuster
+├── SSRF
+│   └── SSRFmap
+├── XXE
+│   └── XXEinjector
+├── SSTI
+├── CSTI
+├── CSRF
+├── Log Poisoning
+├── php://filter (if web tech)
+├── Source Code Repository Checks
+│   ├── .git
+│   │   └── gittools
+│   │   └── git-dumper
+│   ├── .hg
+│   │   └── hg-extractor
+│   └── .bzr
+│       └── bzr-extractor
+├── WebDAV
+│   └── cadaver
+│   └── davtest
+├── Vulnerable Code Snippets
+│   └── Static code analysis tools
+│   └── grep
+├── File Upload Vulnerabilities
+│   ├── Unrestricted File Upload
+│   ├── Content-Type Restriction Bypass
+│   ├── MIME Sniffing
+│   ├── Directory/Path Traversal
+│   ├── File Size Limit Bypass
+│   ├── File Extension Whitelisting Bypass
+│   ├── File Content Validation Bypass
+│   ├── Overwriting Existing Files
+│   └── Storing Files in Unexpected Locations
+└── Manual Source Code Review
+    └── Static code analysis tools
+    └── grep
