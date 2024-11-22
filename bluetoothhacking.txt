@@ -1,0 +1,6 @@
+####Bluetooth HAcking######
+lsusb
+sudo hciconfig hci0 up
+sudo hcitool scan 
+sudo sdptool browse
+python3 BlueDucky.py

