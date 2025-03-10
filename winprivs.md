@@ -1,22 +1,29 @@
 ## SYSTEM ENUMERATION
+```pwsh
 systeminfo
 systeminfo | findstr /B /C:"OS Name" /C:"OS Version" /C:"System Type"
 hostname
 wmic qfe
 wmic logicaldisk get caption,filesystem,freespace,size,volumename
 
+```
 ## USER ENUMERATION
+```pwsh
 whoami /priv
 whoami /groups
 net user
 net user <username>
 net localgroup
+```
+
 
 ## NETWORK ENUMERATION
+```pwsh
 ipconfig /all
 arp -a
 route print
 netstat -ano
+```
 
 ## HUNTING PASSWORDS
 findstr /si password *.txt
