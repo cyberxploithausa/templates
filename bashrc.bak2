@@ -1,0 +1,230 @@
+# ~/.bashrc: executed by bash(1) for non-login shells.
+# see /usr/share/doc/bash/examples/startup-files (in the package bash-doc)
+# for examples
+
+# If not running interactively, don't do anything
+case $- in
+    *i*) ;;
+      *) return;;
+esac
+
+
+# don't put duplicate lines or lines starting with space in the history.
+# See bash(1) for more options
+HISTCONTROL=ignoreboth
+
+# append to the history file, don't overwrite it
+shopt -s histappend
+
+# for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
+HISTSIZE=1000
+HISTFILESIZE=2000
+
+# check the window size after each command and, if necessary,
+# update the values of LINES and COLUMNS.
+shopt -s checkwinsize
+
+# If set, the pattern "**" used in a pathname expansion context will
+# match all files and zero or more directories and subdirectories.
+#shopt -s globstar
+
+# make less more friendly for non-text input files, see lesspipe(1)
+#[ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
+
+# set variable identifying the chroot you work in (used in the prompt below)
+if [ -z "${debian_chroot:-}" ] && [ -r /etc/debian_chroot ]; then
+    debian_chroot=$(cat /etc/debian_chroot)
+fi
+
+# set a fancy prompt (non-color, unless we know we "want" color)
+case "$TERM" in
+    xterm-color) color_prompt=yes;;
+esac
+
+# uncomment for a colored prompt, if the terminal has the capability; turned
+# off by default to not distract the user: the focus in a terminal window
+# should be on the output of commands, not on the prompt
+force_color_prompt=yes
+
+if [ -n "$force_color_prompt" ]; then
+    if [ -x /usr/bin/tput ] && tput setaf 1 >&/dev/null; then
+	# We have color support; assume it's compliant with Ecma-48
+	# (ISO/IEC-6429). (Lack of such support is extremely rare, and such
+	# a case would tend to support setf rather than setaf.)
+	    color_prompt=yes
+    else
+	    color_prompt=
+    fi
+fi
+
+if [ "$color_prompt" = yes ]; then
+    PS1="\[\033[0;31m\]\342\224\214\342\224\200\$([[ \$? != 0 ]] && echo \"[\[\033[0;37m\]\342\234\227\[\033[0;31m\]]\342\224\200\")[$(if [[ ${EUID} == 0 ]]; then echo '\[\033[01;31m\]root\[\033[01;33m\]@\[\033[01;96m\]\h'; else echo '\[\033[0;39m\]\u\[\033[01;33m\]@\[\033[01;96m\]\h'; fi)\[\033[0;31m\]]\342\224\200[\[\033[0;32m\]\W\[\033[0;31m\]]\n\[\033[0;31m\]\342\224\224\342\224\200\342\224\200\342\225\274 \[\033[0m\]\[\e[01;33m\]\\$ \[\e[0m\]"
+else
+    PS1='┌──[\u@\h]─[\W]\n└──╼ \$ '
+fi
+
+# If this is an xterm set the title to user@host:dir
+case "$TERM" in
+xterm*|rxvt*)
+    PS1="\[\033[0;32m\]\342\224\214\342\224\200\$([[ \$? != 0 ]] && echo \"[\[\033[0;32m\]\342\234\227\[\033[0;32m\]]\342\224\200\")[$(if [[ ${EUID} == 0 ]]; then echo '\[\033[01;32m\]root\[\033[01;32m\]@\[\033[01;96m\]\h'; else echo '\[\033[0;32m\]\u\[\033[01;32m\]@\[\033[0;36m\]\h'; fi)\[\033[0;32m\]]\342\224\200[\[\033[0;34m\]\W\[\033[0;32m\]]\n\[\033[0;32m\]\342\224\224\342\224\200\342\224\200\342\225\274 \[\033[0m\]\[\e[01;32m\]\\$ \[\e[0m\]"
+    ;;
+*)
+    ;;
+esac
+
+# enable color support of ls and also add handy aliases
+if [ -x /usr/bin/dircolors ]; then
+    test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
+    alias ls='ls --color=auto'
+    alias dir='dir --color=auto'
+    alias vdir='vdir --color=auto'
+
+    alias grep='grep --color=auto'
+    alias fgrep='fgrep --color=auto'
+    alias egrep='egrep --color=auto'
+fi
+
+# some more ls aliases
+alias em='emacs -nw'
+alias _='sudo'
+alias _i='sudo -i'
+alias fucking='sudo'
+alias please='sudo'
+
+# Set 'man' colors
+if [ "$color_prompt" = yes ]; then
+	man() {
+	env \
+	LESS_TERMCAP_mb=$'\e[01;31m' \
+	LESS_TERMCAP_md=$'\e[01;31m' \
+	LESS_TERMCAP_me=$'\e[0m' \
+	LESS_TERMCAP_se=$'\e[0m' \
+	LESS_TERMCAP_so=$'\e[01;44;33m' \
+	LESS_TERMCAP_ue=$'\e[0m' \
+	LESS_TERMCAP_us=$'\e[01;32m' \
+	man "$@"
+	}
+fi
+
+function hex-encode()
+{
+  echo "$@" | xxd -p
+}
+
+function hex-decode()
+{
+  echo "$@" | xxd -p -r
+}
+
+function rot13()
+{
+  echo "$@" | tr 'A-Za-z' 'N-ZA-Mn-za-m'
+}
+
+# Alias definitions.
+# You may want to put all your additions into a separate file like
+# ~/.bash_aliases, instead of adding them here directly.
+# See /usr/share/doc/bash-doc/examples in the bash-doc package.
+
+if [ -f ~/.bash_aliases ]; then
+    . ~/.bash_aliases
+fi
+
+# enable programmable completion features (you don't need to enable
+# this, if it's already enabled in /etc/bash.bashrc and /etc/profile
+# sources /etc/bash.bashrc).
+if ! shopt -oq posix; then
+  if [ -f /usr/share/bash-completion/bash_completion ]; then
+    . /usr/share/bash-completion/bash_completion
+  elif [ -f /etc/bash_completion ]; then
+    . /etc/bash_completion
+  fi
+fi
+
+alias addtohost='sudo sh -c '\''echo "$0 $1" >> /etc/hosts'\'''
+alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
+alias bbnotes='clear;cat /home/cyberxploit/referencestuff/bbnotess.txt'
+alias bluenote='clear;cat /home/cyberxploit/referencestuff/bluetoothhacking.txt'
+alias catch='clear;pwncat-cs -lp 9999'
+alias cheat='curl  https://cht.sh'
+alias checks='clear; cat /home/cyberxploit/referencestuff/checkwebapp.txt'
+alias create='clear; mkdir -p ./vuln; mkdir -p ./files; notetemplate | xclip'
+#create() { clear; mkdir -p ./vuln ./files; [ -z "$1" ] && echo "Usage: create <filename>" && return 1; notetemplate > "$1".md; obsidian "$1".md; }
+alias egrep='egrep --color=auto'
+alias fgrep='fgrep --color=auto'
+alias getip='curl icanhazip.com'
+alias grep='grep --color=auto'
+alias hide='sudo bash ~/hide.sh'
+alias la='ls -A'
+alias ll='clear;ls -laht'
+#alias ls='lsd'
+alias notetemplate='clear; cat /home/cyberxploit/referencestuff/note_template.txt'
+alias playctf='clear; cd /home/cyberxploit/Desktop/projects/ctfs/personal'
+alias resource='clear; cat /home/cyberxploit/referencestuff/resources.md'
+alias resource2='clear; cat /home/cyberxploit/referencestuff/resources2.md'
+alias scan='clear; bash /home/cyberxploit/referencestuff/scanNetwork.sh'
+alias starthtbvpn='clear; sudo openvpn /home/cyberxploit/Desktop/projects/ctfs/personal/HackTheBox/machines/lab_cyberxploit.ovpn'
+alias startoffsecvpn='clear; sudo openvpn /home/cyberxploit/Desktop/projects/ctfs/personal/offsec/universal.ovpn'
+alias startthmvpn='clear;sudo openvpn /home/cyberxploit/Desktop/projects/ctfs/personal/thm/cyber.ovpn'
+alias up='python3 -m http.server 8000'
+alias venomref='clear; cat /home/cyberxploit/referencestuff/venomref.md'
+alias wpanotes='clear; cat /home/cyberxploit/referencestuff/wpa.md'
+alias xclip='xclip -selection clipboard'
+alias persist='clear; cat /home/cyberxploit/referencestuff/persistance.md'
+export PATH="/usr/sbin:$PATH"
+alias swim='asciiquarium | lolcat -p 200'
+alias settarget='function _setip() { export target="$1"; echo "target set to $target"; }; _setip'
+alias seturl='function _seturl() { export URL="http://$1/FUZZ"; echo "URL set to $URL"; }; _seturl'
+alias seturl1='function _seturl1() { export URL1="http://$1/FUZZ/"; echo "URL1 set to $URL1"; }; _seturl1'
+alias adnote='clear;cat /home/cyberxploit/referencestuff/ad_notes.md'
+alias winprivs='clear; cat /home/cyberxploit/referencestuff/winprivs.md'
+alias retro='cool-retro-term --fullscreen &'
+#alias lesspriority='sudo ionice -c 3 -p $(pidof $1)'
+alias lesspriority='bash -c "ionice -c 3 -p \$(pidof \$1) 2>/dev/null || echo \"App not running\""'
+alias code='codium .'
+alias tmuxnote='clear; cat /home/cyberxploit/referencestuff/tmuxnote.md'
+alias vimnote='cat /home/cyberxploit/referencestuff/vimnote.md'
+export PATH="$PATH:/home/cyberxploit/go/bin"
+
+
+# Generated for pdtm. Do not edit.
+export PATH=$PATH:/home/cyberxploit/.pdtm/go/bin
+# Source .bashrc inside tmux
+#if [[ -n "$TMUX" ]]; then
+#    source ~/.bashrc
+#fi
+
+
+# Created by `pipx` on 2024-08-18 22:41:39
+export PATH="$PATH:/home/cyberxploit/.local/bin"
+#export ANDROID_AVD_HOME=$HOME/.android/avd/
+export ANDROID_HOME=/home/cyberxploit/android
+export PATH=$PATH:$ANDROID_HOME/platform-tools:$ANDROID_HOME/emulator
+alias start_android_emulator='$ANDROID_HOME/emulator/emulator -avd google-34 -scale 0.6 -writable-system -netdelay none -netspeed full -dns-server 8.8.8.8'
+export PATH=$PATH:/usr/bin/apksigner
+export DOTNET_ROOT=/home/cyberxploit/dotnet
+export PATH=/usr/sbin:/usr/local/bin:/usr/bin:/bin:/usr/local/games:/usr/games:/home/cyberxploit/go/bin:/home/cyberxploit/.pdtm/go/bin:/home/cyberxploit/.local/bin:/home/cyberxploit/android/platform-tools:/home/cyberxploit/android/emulator:/usr/bin/apksigner:/home/cyberxploit/dotnet:/home/cyberxploit/dotnet
+export PATH=/home/cyberxploit/.nimble/bin:/usr/sbin:/usr/local/bin:/usr/bin:/bin:/usr/local/games:/usr/games:/home/cyberxploit/go/bin:/home/cyberxploit/.pdtm/go/bin:/home/cyberxploit/.local/bin:/home/cyberxploit/android/platform-tools:/home/cyberxploit/android/emulator:/usr/bin/apksigner
+export PYENV_ROOT="$HOME/.pyenv"
+command -v pyenv >/dev/null || export PATH="$PYENV_ROOT/bin:$PATH"
+eval "$(pyenv init -)"
+#xhost +SI:localuser:northdemy
+
+
+export GOENV_ROOT="$HOME/.goenv"
+export PATH="$GOENV_ROOT/bin:$PATH"
+eval "$(goenv init -)"
+alias wine='flatpak run org.winehq.Wine'
+export PYTHONWARNINGS="ignore::UserWarning"
+docker-ip() {
+  sudo docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' "$1"
+}
+docker-shell(){
+  sudo docker exec -it "$1" bash
+}
+docker-ports() {
+  docker inspect --format='{{range $p, $conf := .NetworkSettings.Ports}}{{$p}} -> {{(index $conf 0).HostPort}}{{"\n"}}{{end}}' "$1"
+}
+
+alias ddos="clear; cat /home/cyberxploit/referencestuff/ddos.md"
+alias troll="clear; cat /home/cyberxploit/referencestuff/troll.txt"

