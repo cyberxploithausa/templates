@@ -8,7 +8,7 @@ cd /home/cyberxploit/Desktop/projects/ctfs/Notes/CTF-Notes || exit
 git add .
 git commit -m "Auto-backup: $(date '+%Y-%m-%d %H:%M:%S')"
 git push
-git push https://cyberxploithausa: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@github.com/cyberxploithausa/ctf-notes.git
+git push https://cyberxploithausa:access_token@github.com/cyberxploithausa/ctf-notes.git
 
 # Notification
 export DISPLAY=:0
