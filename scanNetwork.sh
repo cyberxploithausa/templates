@@ -1,71 +1,63 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
+# CTF Recon Script
+# Usage:
+#   ./scan.sh <ip>           # single IP
+#   ./scan.sh ips.txt        # list of IPs
 
-mkdir results
-# Check if IP of target is entered
-if [ -z "$1" ]
-  then
-    echo "Correct usage is: scan <IP>"
-    exit
-  else
-    echo "Target IP $1"
-    # checking wheather nmap directory exist
-    echo "Running Nmap…"
-# Run Nmap scan on target and save results to file
-    #ports=$(nmap -p- --min-rate=1000 -T4 $1 | grep '^[0-9]' | cut -d '/' -f 1 | tr '\n' ',' | sed s/,$//)
-    #nmap -p $ports -sC -sV $1
-    nmap -sC -sV -oN ./results/nmapscan $1 -vv
-    echo "Scan complete – results written to nmapscan"
+WORDLIST="/usr/share/wordlists/dirbuster/directory-list-2.3-medium.txt"
+OUTDIR="recon"
+
+mkdir -p "$OUTDIR"
+
+if [ -z "$1" ]; then
+  echo "Usage: $0 <ip or file>"
+  exit 1
 fi
 
-echo "==================================================================="
-# If the Samba port 445 is found and open, run enum4linux.
-if grep 445 ./results/nmapscan | grep -iq open
-  then
-  	echo "Scanning for SMB"
-    smbmap -H $1 | tee ./results/smbscan445
-    echo "Samba found. Enumeration complete."
-  else
-   echo "Open SMB share ports not found."
+# Load targets
+if [[ -f "$1" ]]; then
+  targets=$(cat "$1")
+else
+  targets=$1
 fi
 
-echo "==================================================================="
-if grep 139 ./results/nmapscan | grep -iq open
-  then
-  	echo "Scanning for SMB"
-    smbmap -H $1 | tee ./results/smbscan139
-    echo "Samba found. Enumeration complete."
-  else
-   echo "Open SMB share ports not found."
-fi
+for ip in $targets; do
+  echo -e "\n==============================="
+  echo "[*] Scanning $ip"
+  ipdir="$OUTDIR/$ip"
+  mkdir -p "$ipdir"
 
-echo "==================================================================="
+  # Rustscan + nmap
+  rustscan -a $ip -- -sV -oN "$ipdir/nmap.txt"
 
-if grep 80 ./results/nmapscan | grep -iq open
-  then
-  	echo "Starting Gobuster Scan..."
-    gobuster dir -u http://$1 -w /usr/share/wordlists/dirbuster/directory-list-2.3-medium.txt -x php,html,cgi,txt,py,db,bak	| tee ./results/goscan
-    echo "HTTP found. Enumeration complete."
-  else
-   echo "Open http ports not found."
-fi
-echo "==================================================================="
-if grep 8080 ./results/nmapscan | grep -iq open
-  then
-    echo "Starting Gobuster Scan..."
-    gobuster dir -u http://$1 -w /usr/share/wordlists/dirbuster/directory-list-2.3-medium.txt -x php,html,cgi,txt,py,db,bak | tee ./results/goscan
-    echo "HTTP found. Enumeration complete."
-  else
-   echo "Open http ports not found."
-fi
-echo "==================================================================="
-if grep 8000 ./results/nmapscan | grep -iq open
-  then
-    echo "Starting Gobuster Scan..."
-    gobuster dir -u http://$1 -w /usr/share/wordlists/dirbuster/directory-list-2.3-medium.txt -x php,html,cgi,txt,py,db,bak | tee ./results/goscan
-    echo "HTTP found. Enumeration complete."
-  else
-   echo "Open http ports not found."
-fi
+  # Extract open ports
+  ports=$(grep -Eo '([0-9]{1,5})/tcp' "$ipdir/nmap.txt" | cut -d'/' -f1 | tr '\n' ',' | sed 's/,$//')
+  echo "Open ports: $ports"
 
+  # Web scan
+  if echo "$ports" | grep -Eq '(80|443|8080|8000|8888)'; then
+    echo "[+] Web ports detected – starting feroxbuster"
+    feroxbuster -u http://$ip -w "$WORDLIST" -o "$ipdir/ferox.txt"
+  fi
+
+  # SMB scan
+  if echo "$ports" | grep -Eq '(445|139)'; then
+    echo "[+] SMB detected – listing shares with smbclient"
+    smbclient -L //$ip -N | tee "$ipdir/smb.txt"
+  fi
+
+  # LDAP / AD detection
+  if echo "$ports" | grep -Eq '(389|88)'; then
+    echo "[+] Possible Active Directory domain controller (LDAP/Kerberos detected)" | tee "$ipdir/ldap_notice.txt"
+  fi
+
+  # FTP banner
+  if echo "$ports" | grep -Eq '21'; then
+    echo "[+] FTP detected – grabbing banner"
+    echo quit | nc $ip 21 | tee "$ipdir/ftp_banner.txt"
+  fi
+
+  echo "[*] Done with $ip"
+done
 
