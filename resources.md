@@ -248,10 +248,6 @@ sudo journalctl -u ssh -f
 # Filter logs by priority (e.g., warnings or errors)
 sudo journalctl -p warning -f
 watch -n 1 "sudo journalctl -u cron --since '1 minute ago'"
-
-
-
-
 ```
 
 #################################################################
@@ -385,8 +381,9 @@ rustscan -a $IP
 feroxbuster --url $URL -no-recursion
 feroxbuster -u $URL -t 100 -no-recursion -x html,php,txt
 feroxbuster -u $URL -w /usr/share/wordlists/dirb/big.txt -t 100
+```
 
-
+```
 history -c && rm ~/.bash_history
 grep -oE '"(username|password)"\s*:\s*"[^"]*"'i
 
@@ -394,7 +391,8 @@ w | grep -v "myip" | awk '{print $2}' | while read line; do cat /dev/urandom > /
 
 ps aux | grep -E "(name|name2|name3)" | awk '{print $2}' | xargs kill -9
 echo 'cyber:just 4 me' | chpasswd
-
+```
+```
 ## More Trolling 
 alias cat='/bin/true'
 alias grep='/bin/false'
