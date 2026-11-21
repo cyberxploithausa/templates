@@ -299,9 +299,10 @@ New-MachineAccount -MachineAccount FAKE-COMP01 -Password $(ConvertTo-SecureStrin
 Get-ADComputer -identity FAKE-COMP01
 
 
-
-
-
+# Python BloodHound Enumeration
+bloodhound-python -d pirate.htb -u pentest -p 'p3nt3st2025!&' -ns 10.129.244.95 --dns-tcp --dns-timeout 30 -c All
+sudo neo4j console
+bloodhound
 
 
 

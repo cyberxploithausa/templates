@@ -96,7 +96,31 @@ curl "https://web.archive.org/cdx/search/cdx?url=*.example.com/*&collapse=urlkey
 cat output.txt | grep -Ea '\.pdf' | while read -r url; do curl -s "$url" | pdftotext - - | grep -Eaiq '(internal use only|confidential|strictly private|personal & confidential|private|restricted|internal|not for distribution|do not share|proprietary|trade secret|classified|sensitive|bank statement|invoice|salary|contract|agreement|non disclosure|passport|social security|ssn|date of birth|credit card|identity|id number|company confidential|staff only|management only|internal only)' && echo "$url"; done
 
 
+# ARMAN SIDANA METHODOLOGY
 
+# Finding a Target
+    - https://bbradar.io
+    - https://openbugbounty.org/bugbounty-list/
+    - bugbounty dorks /home/cyberxploit/Desktop/program/bugbounty/dorks.txt
+        - intext:responsible disclosure bounty
+        - filter domain and choose from the list
+    - subdomain enumereations
+        - look for sign-up pages
+        - dev.domain.com
+        - app.domain.com
+        - cpanel.domain.com
+    - shodan.io
+        - ssl:domain.com   (check for result header for IP)
+            - filter base on tech/product/
+            - look for IP of product
+        - search for cpanel default login creds / exploit etc
+    - Check for WAF
+        - wafw00f domain.com/sub.domain.com/IP
+        - dig cname IP
+        - dig IP
+        - run nmap (ping)
+        - try IP with port on browser
+        - search for directory and files fuzzing
 
 
 

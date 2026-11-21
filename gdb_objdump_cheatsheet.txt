@@ -1,0 +1,331 @@
+GDB & OBJDUMP CHEAT-SHEET
+Pure hands-on examples, syntax, quick usage.
+No long English. Use directly in terminal.
+
+------------------------
+GDB (GNU Debugger)
+------------------------
+Start / attach
+gdb ./binary
+gdb -q ./binary
+gdb --args ./binary arg1 arg2
+gdb -p PID
+gdbserver :1234 ./binary
+
+Quick run / restart
+run [args]
+r
+set args arg1 arg2
+run < input.txt
+run > out.txt
+start
+kill
+continue
+finish
+next / n
+step / s
+stepi / si
+nexti / ni
+until <location>
+
+Breakpoints
+break main
+b *0x4005d0
+break file.c:123
+break function_name
+tbreak function_name
+break if <cond>
+watch var
+rwatch var
+awatch var
+delete n
+delete
+disable n
+enable n
+info breakpoints
+backtrace / bt
+bt full
+frame N
+up / down
+where
+
+Examining memory / registers
+info registers / i r
+print $rip
+x/Nfu ADDRESS
+x/16bx $rsp
+x/32xw 0x601040
+x/s ADDRESS
+x/wi ADDRESS
+display EXPR
+undisplay ALL
+set $rax=0x0
+set var x=5
+info proc mappings
+
+Printing variables / expressions
+print var
+p/x var
+p/d var
+p/t var
+p/a ptr
+p $rax
+ptype mystruct
+whatis var
+set print pretty on
+call func(args)
+set logging on
+set logging file gdb.log
+set logging off
+
+Disassembly / objdump-like
+disas
+disassemble /r main
+disassemble 0x4005d0, 0x400610
+layout asm
+layout regs
+set disassemble-next-line on
+display /i $pc
+
+Break on syscall / signal
+catch syscall
+catch throw
+handle SIGSEGV pass print nopass
+handle SIGINT nopass
+
+Reverse debugging (if enabled)
+target record-full
+reverse-step
+reverse-continue
+
+Debugging dynamic libs
+set solib-search-path ./libs
+set solib-absolute-prefix /
+info sharedlibrary
+sharedlibrary libname
+set stop-on-solib-events 1
+
+Core dumps
+gdb ./binary core
+info proc mappings
+bt
+
+Conditional / advanced breakpoints
+break *0x400abc if ((int)ptr)==123
+break foo if strcmp(name,"admin")==0
+command N
+    printf "hit N\n"
+    cont
+end
+
+Scripting & Python
+source script.gdb
+python print("hello from gdb python")
+python
+>import gdb
+>gdb.execute("break main")
+>end
+define hook-run
+    printf "Starting run\n"
+end
+
+TUI mode
+gdb -tui ./binary
+Ctrl-x a
+Ctrl-x o
+
+Common flags and env
+set environment VAR=value
+show environment
+set follow-fork-mode parent|child
+set detach-on-fork on|off
+
+Attach/remote
+target remote :1234
+target extended-remote :1234
+monitor <cmd>
+
+Profiling / info
+info threads
+thread apply all bt
+thread THREADNO
+set scheduler-locking on|off
+
+Pretty printers for C++ / Rust
+python import sys; sys.path.insert(0, '/usr/share/gcc-9/python'); import libstdcxx.v6.printers as p; p.register_libstdcxx_printers(None)
+
+GDB shorthand cheats
+r = run
+c = continue
+n = next
+s = step
+bt = backtrace
+si = stepi
+ni = nexti
+i r = info registers
+x/format addr = examine
+p = print
+
+Examples — small, direct
+# Debug overflow crash
+gdb ./vuln
+b main
+run
+bt
+frame 0
+info locals
+x/64bx $rsp
+
+# Leak using format string
+gdb ./fmt
+b *0x400610
+run
+print *(char**)0x601030
+
+# Attach to PID
+ps aux | grep server
+sudo gdb -p 1234
+
+# Remote debug (gdbserver)
+# on target: gdbserver :1234 ./app
+# on host:
+gdb ./app
+target remote targetip:1234
+b main
+c
+
+# Debug PIE/ASLR binaries
+set disable-randomization off|on
+
+# Inspect memory mapped file
+x/64bx 0x7ffff7dd7000
+info proc mappings
+
+# Overwrite return address manually
+b vuln
+run
+set {long}0x7fffffffe120 = 0x4005d0
+
+# Call function inside process
+call secret(0xdeadbeef)
+
+# Read string from memory
+x/s 0x601050
+
+# Dump region to file
+dump memory /tmp/chunk 0x601000 0x602000
+
+# Load core and show registers
+gdb ./app core
+info registers
+bt
+
+# Reverse step example (requires record)
+target record-full
+run
+
+# Watching allocations
+break malloc
+run
+bt
+print (void*)$rdi
+
+# Patch binary in memory
+set {unsigned char[5]}0x4005d0 = {0x90,0x90,0x90,0x90,0x90}
+
+# Heap debug with glibc
+set environment MALLOC_CHECK_=3
+break malloc
+run
+
+------------------------
+OBJDUMP
+------------------------
+Basic usage
+objdump -d ./binary
+objdump -D ./binary
+objdump -t ./binary
+objdump -T ./binary
+objdump -h ./binary
+objdump -x ./binary
+objdump -s -j .rodata ./binary
+objdump -M intel -d ./binary
+objdump -M att -d ./binary
+objdump -d -Mintel --no-show-raw-insn ./binary
+
+Disassemble specific address/range
+objdump -d --start-address=0x4005d0 --stop-address=0x400610 ./binary
+
+Symbol / relocation
+objdump -t ./binary | less
+objdump -R ./binary
+readelf -s ./binary
+
+Hex dump / raw data
+objdump -s -j .data ./bin
+hexdump -C -n 256 -s 0x100 ./binary
+
+Examples — direct
+objdump -d ./vuln | sed -n '/<main>:/,/<_start>:/p'
+objdump -M intel -d ./vuln | sed -n '/<main>:/,/<_start>:/p'
+objdump -d ./vuln | awk '{print $2}' | grep -E '^[0-9a-f]'
+objdump -h ./vuln
+objdump -D ./bin | grep -n "call" | sed -n '1,120p'
+objdump -x ./lib.so | grep SONAME -A2
+objdump -t ./bin | grep FUNC
+
+Advanced combos / pipelines
+objdump -d ./vuln | awk '/^[[:xdigit:]]+:/ {print}' | sed 's/:\t/ /g' | cut -f1,2,3
+objdump -d -M intel ./vuln > tmp.dis
+gdb -q -ex "file ./vuln" -ex "set disassemble-next-line on" -ex "disassemble main" -ex "quit"
+
+Useful flags quick
+--disassemble-all (-D)
+--disassemble-text (-d)
+--no-show-raw-insn
+-M intel|att
+
+Cross references
+addr=$(objdump -d ./vuln | grep "<main>:" -n -m1 | cut -d: -f1)
+
+Short examples collection (one-liners)
+objdump -d ./bin | sed -n '/<main>:/,/<_start>:/p' | less
+objdump -D ./bin | grep -n "call" | sed -n '1,120p'
+objdump -x ./lib.so | grep SONAME -A2
+objdump -t ./bin | grep FUNC
+
+Misc
+objdump -p ./binary | grep NEEDED
+objdump -t ./binary | grep __stack_chk_fail
+objdump -R ./binary | grep GOT
+
+------------------------
+EXAMPLES MIXED WORKFLOWS
+------------------------
+addr=$(objdump -d ./vuln | sed -n '/<main>:/,/<_start>:/p' | head -n1 | awk '{print $1}' | tr -d ':')
+gdb -q -ex "b *${addr}" -ex "run" -ex "bt" -ex "quit" ./vuln
+
+gdb -q -ex "dump memory /tmp/mem 0x601000 0x602000" -ex "quit" ./vuln
+objdump -s -j .data ./vuln | less
+
+python - <<'PY'
+from subprocess import run
+run(["objcopy","--update-section",".text=/tmp/newtext.bin","./vuln"])
+PY
+
+objdump -d ./vuln | grep '@plt' | sed -n '1,40p'
+
+# One-liner to get function start address
+objdump -d -M intel ./vuln | sed -n '/<main>:/,/<_start>:/p' | head -n1 | awk '{print $1}'
+
+------------------------
+SHORT TIP LINES
+------------------------
+# GDB: use 'layout asm'
+# GDB: use 'display /i $rip'
+# GDB: use 'set disassemble-next-line on'
+# GDB: dump memory to file with 'dump memory'
+# OBJDUMP: use -M intel for intel syntax
+# OBJDUMP: use -D to disasm everything
+# Use pwndbg/gef/voltron for nicer UI
+# Use objdump for offline static analysis, gdb for live

