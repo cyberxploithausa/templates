@@ -40,11 +40,15 @@ gobuster dir -u $URL -w /opt/SecLists/Discovery/Web-Content/raft-medium-files.tx
 
 ### gobuster for SubDomain brute forcing:
 gobuster dns -d domain.org -w /opt/SecLists/Discovery/DNS/subdomains-top1million-110000.txt -t 30
-"just make sure any DNS name you find resolves to an in-scope address before you test it"
 ```
+"just make sure any DNS name you find resolves to an in-scope address before you test it"
+
+
 ================================================================================
-===Extract IPs from a text file.
+# Extract IPs from a text file.
+```sh
 grep -o '[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}' nmapfile.txt
+```
 ================================================================================
 
 # Wfuzz XSS Fuzzing
