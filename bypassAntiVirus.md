@@ -2,7 +2,7 @@
 
 
 ```
-- git clone https://github.com/ACW360/AVFIRE.git
+git clone https://github.com/ACW360/AVFIRE.git
 cd AVFIRE
 python3 avfire.py
 select 1
@@ -11,7 +11,7 @@ Enter LPORT
 Enter file name
 Start Listener
 
-- wget "https://www.python.org/ftp/python/3.13.15/python-3.13.15-amd64.exe"
+wget "https://www.python.org/ftp/python/3.13.15/python-3.13.15-amd64.exe"
 
 wine ./python-3.13.15-amd64.exe
 wine python -m pip install --upgrade pip
